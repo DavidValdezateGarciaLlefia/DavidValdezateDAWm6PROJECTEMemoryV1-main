@@ -9,8 +9,7 @@ export function Registro() {
     const [password, setPassword] = useState('');
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
-    const { usuario, setUsuario } = useContext(GlobalContext);
-
+    const { setUsuario } = useContext(GlobalContext); 
     function controladorEmail(e) {
         setEmail(e.target.value);
     }
@@ -34,17 +33,17 @@ export function Registro() {
             password: password
         });
 
-        if (!error) {
+        if (!error && data.user) {
             const { error: insertError } = await supabase
-            .from('users')
-            .insert([{ email: email, nombre: nombre, apellido: apellido }]);
+                .from('users')
+                .insert([{ email: email, nombre: nombre, apellido: apellido }]);
             
             if (!insertError) {
                 setUsuario(data.user);
+                navigate('/login');
             } else {
                 console.error(insertError);
             }
-            navigate('/login');
         } else {
             console.error(error);
         }
@@ -59,7 +58,7 @@ export function Registro() {
         }}
     >
         <h1 className="text-4xl font-bold text-center text-yellow-500 mb-8">Registro</h1>
-        <form className="w-[400px] border-4 border-yellow-400 mx-auto p-5 bg-white shadow-lg rounded-lg">
+        <form className="w-[400px] border-4 border-yellow-400 mx-auto p-5 bg-white shadow-lg rounded-lg" onSubmit={controladorSubmit}>
             <div className="mb-4">
                 <label htmlFor="email" className="block text-yellow-700 font-bold mb-2">Email:</label>
                 <input onChange={controladorEmail} type="text" className="p-2 w-full border-2 border-yellow-400 rounded-lg" placeholder="email@example.com" />
